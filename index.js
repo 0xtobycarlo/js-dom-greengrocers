@@ -115,5 +115,74 @@ function renderStore() {
       state.items = state.items;
       render();
     });
+
+    storeList.append(storeItem);
+    storeItem.append(storeDiv, storeButton);
+    storeDiv.append(storeImg);
   }
 }
+
+function renderCart() {
+  for (const cartContents of state.cart) {
+    const cartItem = document.createElement("li");
+
+    const basketImg = document.createElement("img");
+    basketImg.src = `assets/icons/${cartContents.item.id}.svg`;
+
+    const basketItemName = document.createElement("p");
+    basketItemName.textContent = cartContents.item.name;
+
+    const counterSpan = document.createElement("span");
+    counterSpan.className = ".quantity-text";
+    counterSpan.innerText = cartContents.quantity;
+
+    console.log("counterSpan check", cartContents.quantity);
+
+    const removeButton = document.createElement("button");
+    removeButton.innerText = "-";
+    removeButton.className = ".quantity-btn .remove-btn .center";
+    removeButton.addEventListener("click", function () {
+      cartContents.quantity--;
+      if (cartContents.quantity === 0) {
+        const cartContentsIndex = state.cart.findIndex(
+          (i) => i === cartContents
+        );
+        state.cart.splice(cartContentsIndex, 1);
+      }
+      render();
+    });
+
+    const addButton = document.createElement("button");
+    addButton.innerText = "+";
+    addButton.className = ".add-btn";
+    addButton.addEventListener("click", function () {
+      cartContents.quantity++;
+      render();
+    });
+
+    console.log("Check counter function", cartContents.quantity);
+    cartList.append(cartItem);
+    cartItem.append(
+      basketImg,
+      basketItemName,
+      removeButton,
+      counterSpan,
+      addButton
+    );
+  }
+}
+
+function renderTotal() {
+  const totalPrice = document.querySelector(".total-number");
+  let total = 0;
+  for (const price of state.cart) {
+    if (price) {
+      total += price.item.price * price.quantity;
+    } else {
+      totalPrice;
+    }
+  }
+  totalPrice.innerText = `£ ${total.toFixed(2)}`;
+}
+
+render();
